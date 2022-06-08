@@ -24,7 +24,7 @@ const recipe = (sequelize) => {
       healthyScore: {
         type: DataTypes.INTEGER,
       },
-      diets_types: {
+      diets_type: {
         type: DataTypes.STRING,
       },
 
