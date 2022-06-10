@@ -24,13 +24,6 @@ const recipe = (sequelize) => {
       healthyScore: {
         type: DataTypes.INTEGER,
       },
-      diets_type: {
-        type: DataTypes.STRING,
-      },
-
-      steps: {
-        type: DataTypes.STRING,
-      },
 
       createdInDb: {
         type: DataTypes.BOOLEAN,
@@ -38,7 +31,7 @@ const recipe = (sequelize) => {
         defaultValue: true,
       },
     },
-    { timestamp: false, createdAt: false, updatedAt: true }
+    { timestamp: false, createdAt: false, updatedAt: false }
   );
 };
 module.exports = { recipe };

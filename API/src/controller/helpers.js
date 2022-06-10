@@ -1,11 +1,12 @@
 require("dotenv").config();
 const { URL_API } = process.env;
 const axios = require("axios");
-const { Diet, Recipe } = require("../database/database");
+const { Diet, Recipe, Step } = require("../database/database");
 //////////////////////TEST HELPERS////////////////////
 async function test_Db(db) {
   try {
     await db.authenticate();
+    console.log("Conexion a la base de datos OK");
 
     return "conected";
   } catch (error) {
@@ -30,16 +31,17 @@ const filterSteps = (r) => {
   } else return "No hay pasos en esta ID";
 };
 const handleApiResponse = (response) => {
+  console.log("Inicie handle api Response");
   if (Array.isArray(response.data.results)) {
     var apiRecipes = response.data.results.map((r) => {
       return {
         id: r.id,
         image: r.image,
         name: r.title,
-        type: r.diets,
+        diets: r.diets,
         summary: r.summary,
         healthyScore: r.healthScore,
-        dishTypes: r.dishTypes,
+
         steps: filterSteps(r),
         createdInDb: false,
       };
@@ -60,39 +62,38 @@ const handleApiResponse = (response) => {
 };
 
 const getApiRecipes = () => {
+  console.log("---->inicie Get Api Recipes en helpers");
   return axios
     .get(URL_API)
     .then(handleApiResponse)
     .catch((e) => {
+      console.log("---->retornando error", e);
       return [{ API: "no se pudo hacer la consulta", e: e }];
     });
 };
 const getDbRecipes = () => {
+  console.log("Inicie GetdbRecipes de Helpers");
+
   return Recipe.findAll({
-    include: {
-      model: Diet,
-      through: { attributes: [] },
-      attributes: ["name"],
-    },
+    include: [
+      {
+        model: Diet,
+        through: { attributes: [] },
+        attributes: ["name"],
+      },
+      {
+        model: Step,
+        //through: { attributes: [] },
+        attributes: ["number", "description"],
+      },
+    ],
   });
 };
 
-const handleDietList = async (dietList) => {
-  await dietList.map(async (dietName) => {
-    await Diet.findOrCreate({
-      where: { name: dietName },
-      default: { name: dietName },
-    });
-  });
-};
-
-const stringToArray = (str) =>
-  str.replaceAll("[", "").replaceAll("]", "").split(",");
 module.exports = {
   test_Db,
   getApiRecipes,
-  handleDietList,
-  stringToArray,
+
   getDbRecipes,
   close,
   handleApiResponse,
