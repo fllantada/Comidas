@@ -3,7 +3,7 @@ const axios = require("axios");
 const { getApiRecipes, getDbRecipes, handleApiResponse } = require("./helpers");
 const { Diet, Recipe, Step } = require("../database/database");
 const { API_KEY } = process.env;
-
+const local_result = { flag: false, data: {} };
 const getDiets = async (req, res) => {
   try {
     const data = await Diet.findAll();
@@ -18,6 +18,11 @@ const getDiets = async (req, res) => {
 const getRecipes = async (req, res) => {
   const { name } = req.query;
 
+  if (local_result.flag) {
+    console.log("retornando data local");
+    return res.json(local_result.data);
+  }
+
   try {
     const apiRecipes = await getApiRecipes();
     const dbRecipes = await getDbRecipes();
@@ -31,6 +36,8 @@ const getRecipes = async (req, res) => {
         ? res.status(200).send(recipeFinded)
         : res.status(404).json({ msg: "no se encontro la receta" });
     } else {
+      local_result.flag = true;
+      local_result.data = allRecipes;
       res.json(allRecipes);
     }
   } catch {

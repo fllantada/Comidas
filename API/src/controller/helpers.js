@@ -32,6 +32,7 @@ const filterSteps = (r) => {
 };
 const handleApiResponse = (response) => {
   console.log("Inicie handle api Response");
+  //const regEx = new RegExp("((</w+>|<w+>))");
   if (Array.isArray(response.data.results)) {
     var apiRecipes = response.data.results.map((r) => {
       return {
@@ -39,7 +40,12 @@ const handleApiResponse = (response) => {
         image: r.image,
         name: r.title,
         diets: r.diets,
-        summary: r.summary,
+        summary: r.summary
+          .replaceAll("</b", "")
+          .replaceAll("<b>", "")
+          .replaceAll("<a>", "")
+          .replaceAll("</a>", "")
+          .replaceAll(`<a href="https://`, "www"),
         healthyScore: r.healthScore,
 
         steps: filterSteps(r),
@@ -67,7 +73,7 @@ const getApiRecipes = () => {
     .get(URL_API)
     .then(handleApiResponse)
     .catch((e) => {
-      console.log("---->retornando error", e);
+      console.log("---->retornando error");
       return [{ API: "no se pudo hacer la consulta", e: e }];
     });
 };

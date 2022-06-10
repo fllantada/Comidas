@@ -10,10 +10,27 @@ export const Div = styled.div`
   margin: 20px 50px;
   height: 80px;
   border-radius: 15px;
+  a {
+    display: flex;
+    flex-direction: row;
+    font-size: 3em;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 30vh;
+    text-align: center;
+    text-decoration: none;
+    color: salmon;
+
+    &:hover {
+      background-color: salmon;
+      color: white;
+    }
+  }
 `;
 
 export const LinkStyled = styled(Link)`
-  display: flex;
+  /* display: flex;
   flex-direction: row;
   font-size: 3em;
   align-items: center;
@@ -23,11 +40,11 @@ export const LinkStyled = styled(Link)`
   text-align: center;
   text-decoration: none;
   color: salmon;
-
+ 
   &:hover {
     background-color: salmon;
     color: white;
-  }
+  } */
 `;
 export const Button = styled.button`
   background: transparent;
