@@ -4,6 +4,7 @@ import Nav from "./components/nav/nav.jsx";
 import Home from "./components/home/home.jsx";
 
 import EstilosGlobales from "./EstilosGlobales";
+import Create from "./components/Create/Create.js";
 
 function App() {
   return (
@@ -12,7 +13,9 @@ function App() {
 
       <Route exact path={"/"} render={() => <Landing />} />
       <Route path={"/home"} render={() => <Nav />} />
-      <Route path={"/home"} render={() => <Home />} />
+      <Route exact path={"/home"} render={() => <Home />} />
+      <Route path={"/home/Create"} render={() => <Create />} />
+    
     </>
   );
 }

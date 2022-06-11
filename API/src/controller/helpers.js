@@ -69,12 +69,13 @@ const handleApiResponse = (response) => {
 
 const getApiRecipes = () => {
   console.log("---->inicie Get Api Recipes en helpers");
+  //URL_API="www.fdfdhola.com"
   return axios
     .get(URL_API)
     .then(handleApiResponse)
     .catch((e) => {
       console.log("---->retornando error");
-      return [{ API: "no se pudo hacer la consulta", e: e }];
+      return [{ Get_a_LA_API: "no se pudo hacer la consulta", Error_API: e }];
     });
 };
 const getDbRecipes = () => {

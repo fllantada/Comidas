@@ -5,9 +5,12 @@ const { recipe } = require("../models/Recipe");
 const { step } = require("../models/Step");
 
 const Sequelize = require("sequelize");
-
+const [DB,USER,PWD]=["comidas","postgres","sldkfj"]
+console.log(DB,USER,PWD)
 //create DB
-const sequelize = new Sequelize(DB_URL, {
+const sequelize = new Sequelize(DB,USER,PWD, {
+  host:"localhost",
+  dialect:"postgres",
   logging: false,
   native: false,
 });
