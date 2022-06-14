@@ -39,7 +39,9 @@ const handleApiResponse = (response) => {
         id: r.id,
         image: r.image,
         name: r.title,
-        diets: r.diets,
+        diets: r.diets.map((e) => {
+          return { name: e };
+        }), //r.diets, //normalize  con la base de datos aca
         summary: r.summary
           .replaceAll("</b", "")
           .replaceAll("<b>", "")

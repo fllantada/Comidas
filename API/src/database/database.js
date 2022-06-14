@@ -1,16 +1,17 @@
 require("dotenv").config();
-const { DB_URL, URL_API } = process.env;
+const { DB_URL, URL_API, DB, USER, PWD } = process.env;
 const { diet } = require("../models/Diet");
 const { recipe } = require("../models/Recipe");
 const { step } = require("../models/Step");
+const axios = require("axios");
 
 const Sequelize = require("sequelize");
-const [DB,USER,PWD]=["comidas","postgres","sldkfj"]
-console.log(DB,USER,PWD)
+//const [DB,USER,PWD]=["comidas","postgres","sldkfj"]
+console.log(DB, USER, PWD);
 //create DB
-const sequelize = new Sequelize(DB,USER,PWD, {
-  host:"localhost",
-  dialect:"postgres",
+const sequelize = new Sequelize(DB, USER, PWD, {
+  host: "localhost",
+  dialect: "postgres",
   logging: false,
   native: false,
 });
@@ -41,29 +42,29 @@ Diet.belongsToMany(Recipe, {
 });
 
 const initialize = async () => {
-  // axios.get(URL_API).then((r) => {
-  //   var dietList = r.data.results.map((e) => e.diets);
-  //   dietList = dietList.flat();
-  //   console.log(dietList);
-  //   dietList.map((e) => Diet.findOrCreate({ where: { name: e } }));
-  // });
+  axios.get(URL_API).then((r) => {
+    var dietList = r.data.results.map((e) => e.diets);
+    dietList = dietList.flat();
+    console.log(dietList);
+    dietList.map((e) => Diet.findOrCreate({ where: { name: e } }));
+  });
   // const conection = await test_Db(sequelize);
   //typeof test_Db;
   sequelize
     .authenticate()
     .then(() => console.log("---->Conexion a la base de datos OK"))
     .catch((e) => console.log("fallo la conexion a la DB", e));
-  Diet.findOrCreate({ where: { name: "Gluten Free" } });
-  Diet.findOrCreate({ where: { name: "Vegetarian" } });
-  Diet.findOrCreate({ where: { name: "Lacto-Vegetarian" } });
-  Diet.findOrCreate({ where: { name: "Ovo-Vegetarian" } });
-  Diet.findOrCreate({ where: { name: "Vegan" } });
-  Diet.findOrCreate({ where: { name: "Pescetarian" } });
-  Diet.findOrCreate({ where: { name: "Paleo" } });
-  Diet.findOrCreate({ where: { name: "Primal" } });
-  Diet.findOrCreate({ where: { name: "Low FODMAP" } });
-  Diet.findOrCreate({ where: { name: "Whole30" } });
-  Diet.findOrCreate({ where: { name: "Ketogenic" } });
+  // Diet.findOrCreate({ where: { name: "Gluten Free" } });
+  // Diet.findOrCreate({ where: { name: "Vegetarian" } });
+  // Diet.findOrCreate({ where: { name: "Lacto-Vegetarian" } });
+  // Diet.findOrCreate({ where: { name: "Ovo-Vegetarian" } });
+  // Diet.findOrCreate({ where: { name: "Vegan" } });
+  // Diet.findOrCreate({ where: { name: "Pescetarian" } });
+  // Diet.findOrCreate({ where: { name: "Paleolithic" } });
+  // Diet.findOrCreate({ where: { name: "Primal" } });
+  // Diet.findOrCreate({ where: { name: "Low FODMAP" } });
+  // Diet.findOrCreate({ where: { name: "Whole 30" } });
+  // Diet.findOrCreate({ where: { name: "Ketogenic" } });
 };
 
 module.exports = { conn: sequelize, Diet, Recipe, Step, initialize };

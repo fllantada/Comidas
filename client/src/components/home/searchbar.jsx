@@ -1,14 +1,36 @@
 import React from "react";
-import{setState} from React;
-function SearchBar() {
-    const[search,setSearch]=setState("")
+import { useDispatch } from "react-redux";
+import { searchRecipe } from "../../redux/actions/actions";
+
+export default function SearchBar() {
+  const [input, setInput] = React.useState("");
+
+  const dispatch = useDispatch();
+
+  let handleChange = (e) => {
+    e.preventDefault();
+    setInput(e.target.value);
+  };
+
+  let handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(searchRecipe(input));
+    setInput("");
+  };
+
   return (
-    <form>
-        busqueda
-      <input type='text' />
-      <input type='submit' value='Buscar' />
-    </form>
+    <div>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <label>Busqueda: </label>
+        <input
+          type="text"
+          name="name"
+          value={input}
+          onChange={(e) => handleChange(e)}
+        />
+
+        <button type="submit">Buscar</button>
+      </form>
+    </div>
   );
 }
-
-export default SearchBar;

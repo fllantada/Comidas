@@ -1,119 +1,240 @@
 import React from "react";
-//eslint-disable-next-line
-import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRecipes } from "../../redux/actions/actions";
 import styled from "styled-components";
-
+//acciones
+import {
+  filterByDiet,
+  getAllDiets,
+  getAllRecipes,
+  orderBy,
+  orderScore,
+} from "../../redux/actions/actions";
+//componentes
+import SearchBar from "./searchbar";
+import Filter from "./filter";
+import img from "../landing/img/fondoCards.png";
+import ListaPaginas from "./listaPaginas";
 import Recipe from "../recipe/recipe";
+import OrderBy from "./orderAlfabetico";
+import OrderScore from "./orderScore";
 
 export default function Home() {
   const dispatch = useDispatch();
-  const AllRecipes = useSelector((state) => state.recipes);
-  useEffect(() => {
+
+  const todasLasRecetas = useSelector((state) => state.recipes);
+  const todasLasDietas = useSelector((state) => state.diets);
+  React.useEffect(() => {
     dispatch(getAllRecipes);
-    //eslint-disable-next-line
-  }, []);
-  const handleClick = (event) => {
-    dispatch(getAllRecipes);
-    console.log("entre a handle");
+    dispatch(getAllDiets);
+  }, [dispatch]);
+
+  ////Paginado
+  const [paginaActual, setPagina] = React.useState(1);
+  const [order, setOrder] = React.useState("");
+
+  const recetasPorPagina = 9;
+  const indiceUltimaReceta = paginaActual * recetasPorPagina;
+  const indicePrimeraReceta = indiceUltimaReceta - recetasPorPagina;
+  const recetasActuales = todasLasRecetas.slice(
+    indicePrimeraReceta,
+    indiceUltimaReceta
+  );
+  const paginado = (pagina) => setPagina(pagina);
+  const handleFilterBy = (element) => {
+    dispatch(filterByDiet(element.target.value));
+    setPagina(1);
+  };
+
+  const handleOrderBy = (event) => {
+    event.preventDefault();
+    dispatch(orderBy(event.target.value));
+    setPagina(1);
+    setOrder(event.target.value);
+  };
+  const handleOrderScore = (event) => {
+    event.preventDefault();
+    dispatch(orderScore(event.target.value));
+    setPagina(1);
+    setOrder(event.target.value);
   };
 
   return (
-    <>
-      <OptionContainer>
-        <h3>Opciones de busqueda:</h3>
-        <li>
-          <label htmlFor='createdInDb'> Creado</label>
-          {/* //<span>Creado por:</span> */}
-          <select name='createdInDb' id=''>
-            <option value='all'>Todas</option>
-            <option value={true}>Creado por mi</option>
-            <option value={false}>De la WEB</option>
-          </select>
+    <Div>
+      <FilterContainer>
+        <Filter
+          todasLasDietas={todasLasDietas}
+          handleFilterBy={handleFilterBy}
+        />
+        <OrderBy handleOrderBy={handleOrderBy} />
+        <OrderScore handleOrderScore={handleOrderScore} />
+
+        <li key={1}>
+          <SearchBar search="{search}" key="12412" />
         </li>
-        <li>
-          <label htmlFor='Dieta'>
-            <span>Dieta</span>
-            <select name='Dieta' id=''>
-              <option value='Vegan'>Vegan</option>
-              <option value='Vegetarian'>Vegetarian</option>
-              <option value='Gluten Free'>Gluten Free</option>
-              <option value='Ketogenic'>Ketogenic</option>
-            </select>
-          </label>
-        </li>
-        <li><SearchBar/></li>
-      </OptionContainer>
+      </FilterContainer>
       <OptionContainer>
-        <h3>Ordenar por:</h3>
-        <button
-          onClick={(e) => {
-            handleClick(e);
-          }}
-        >
-          Recargar
-        </button>
+        <ListaPaginas
+          recetasPorPagina={recetasPorPagina}
+          todasLasRecetas={todasLasRecetas.length}
+          paginado={paginado}
+          paginaActual={paginaActual}
+        />
       </OptionContainer>
-      {/* <CardContainer> */}
-      {AllRecipes &&
-        AllRecipes.map((el) => {
-          console.log(el.image);
+
+      {recetasActuales &&
+        recetasActuales.map((el, index) => {
           return (
-            <CardContainer>
-              <Recipe
-                key={el.id}
-                name={el.name}
-                image={el.image}
-                summary={el.summary}
-              />
+            <CardContainer flag={index % 2 ? true : false} key={el.id}>
+              <Link to={`/home/detail/${el.id}`}>
+                <Recipe
+                  key={el.id}
+                  id={el.id}
+                  name={el.name}
+                  image={el.image}
+                  summary={el.summary}
+                  diets={el.diets}
+                  score={el.healthyScore}
+                />
+              </Link>
             </CardContainer>
           );
         })}
-      {/* </CardContainer> */}
-    </>
+    </Div>
   );
 }
-const OptionContainer = styled.div`
-  // background-color:green;
+
+const FilterContainer = styled.nav`
+  width: 90%;
+  position: relative;
+  background-color: #70471d67;
+  border-radius: 30px;
+  color: white;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
-  text-align: center;
-  align-content: center;
+  justify-content: space-around;
   align-items: center;
 `;
-const CardContainer = styled.div`
-  background-color: #ffffff;
-  color: white;
+const Div = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  li {
+    list-style: none;
+  }
+`;
+const OptionContainer = styled.div`
+  margin: 10px 0px;
+  border-radius: 50px;
+  background-color: #937070;
+  width: 70%;
+  height: 3em;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  align-items: center;
+
+  ul {
+    display: flex;
+    flex-direction: row;
+  }
+  button {
+    margin: 0 5px;
+    width: 50px; //poner por props
+    font-size: 20px;
+    border-radius: 150px;
+    background-color: white;
+    &:hover {
+      cursor: pointer;
+      background-color: salmon;
+    }
+  }
+`;
+const CardContainer = styled.div`
+  width: 80%;
+  //background-color: #ffffff;
+  color: white;
+  display: flex;
+  background-image: url(${img});
+  background-repeat: none;
+  background-size: 100%;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin: 40px 40px;
   padding: 25px;
   border-radius: 10px;
+  border: 2px solid black;
+  opacity: 0.95;
+  &:hover {
+    background-color: salmon;
+    background-image: none;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+  }
   div {
+    opacity: none;
     margin: 20px 0px;
     display: flex;
-    flex-direction: row;
+    flex-direction: ${(props) => (props.flag ? "row-reverse" : "row")};
     justify-content: space-evenly;
     text-align: center;
     align-content: center;
     align-items: center;
   }
   h3 {
-    font-size: 2em;
+    font-size: 2.5em;
     text-align: center;
-    color: grey;
+    color: #000000;
   }
   img {
     width: 200px;
     height: 200px;
-    border-radius: 150px;
+    border-radius: 15px;
   }
   p {
+    margin: 0 5%;
+    opacity: 1 !important;
     color: black;
-    font-size: 10px;
+    border: 2px solid grey;
+    font-size: 12px;
     padding: 30px;
+    width: 100%;
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+
+    text-decoration: none;
+    align-items: center;
+    text-align: center;
+  }
+  ul {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+  }
+  li {
+    margin: 10px;
+    border: 2px solid grey;
+    border-radius: 100px;
+    font-size: 20px;
+    color: black;
+    background-color: white;
+    padding: 10px;
+  }
+  h4 {
+    width: 40%;
+    //border: 1px solid;
+    font-size: 2.5em;
+    text-align: center;
+    align-self: center;
+    align-items: center;
+    color: #0a42218b;
   }
 `;
