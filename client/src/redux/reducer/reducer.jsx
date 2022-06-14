@@ -41,6 +41,7 @@ const rootReducer = (state = initialState, action) => {
       recipeFinded = recipeFinded.filter((e) =>
         e.name.toLowerCase().includes(action.payload.toLowerCase())
       );
+
       return { ...state, recipes: recipeFinded };
 
     case FILTER_BY_DIET:
@@ -57,7 +58,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, recipes: recipesFiltered };
     case ORDER_BY: {
       var sortedRecipes = state.recipes;
-      var sortedRecipes = sortedRecipes.sort((x, y) => {
+      sortedRecipes = sortedRecipes.sort((x, y) => {
         if (x.name < y.name && action.payload === "asc") return -1;
         if (x.name < y.name && action.payload === "dsc") return 1;
         if (x.name > y.name && action.payload === "asc") return 1;
@@ -68,8 +69,8 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, recipes: sortedRecipes };
     }
     case ORDER_SCORE: {
-      var sortedRecipes = state.recipes;
-      var sortedRecipes = sortedRecipes.sort((x, y) => {
+      var sortedOrderRecipes = state.recipes;
+      sortedOrderRecipes = sortedOrderRecipes.sort((x, y) => {
         if (x.healthyScore < y.healthyScore && action.payload === "asc")
           return -1;
         if (x.healthyScore < y.healthyScore && action.payload === "dsc")
@@ -81,7 +82,7 @@ const rootReducer = (state = initialState, action) => {
         return 0;
       });
 
-      return { ...state, recipes: sortedRecipes };
+      return { ...state, recipes: sortedOrderRecipes };
     }
 
     default:

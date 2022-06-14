@@ -28,7 +28,13 @@ const filterSteps = (r) => {
     return r.analyzedInstructions[0]?.steps.map((e) => {
       return { number: e.number, step: e.step };
     });
-  } else return "No hay pasos en esta ID";
+  } else
+    return [
+      {
+        number: "No hay pasos en esta Receta",
+        step: "Te sugerimos buscar otra receta",
+      },
+    ];
 };
 const handleApiResponse = (response) => {
   console.log("Inicie handle api Response");
@@ -47,7 +53,8 @@ const handleApiResponse = (response) => {
           .replaceAll("<b>", "")
           .replaceAll("<a>", "")
           .replaceAll("</a>", "")
-          .replaceAll(`<a href="https://`, "www"),
+          .replaceAll(`<a href="https://`, "www")
+          .replaceAll(`>`, ""),
         healthyScore: r.healthScore,
 
         steps: filterSteps(r),
@@ -63,7 +70,13 @@ const handleApiResponse = (response) => {
     steps: response.data.instructions,
     diets: response.data.diets,
     image: response.data.image,
-    summary: response.data.summary,
+    summary: response.data.summary
+      .replaceAll("</b", "")
+      .replaceAll("<b>", "")
+      .replaceAll("<a>", "")
+      .replaceAll("</a>", "")
+      .replaceAll(`<a href="https://`, "www")
+      .replaceAll(`>`, ""),
     steps: filterSteps(response.data),
   };
   return apiRecipe;

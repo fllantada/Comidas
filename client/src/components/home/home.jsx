@@ -81,6 +81,9 @@ export default function Home() {
           paginaActual={paginaActual}
         />
       </OptionContainer>
+      {recetasActuales.length == 0 && (
+        <h1>"No se encontro ninguna receta con ese nombre"</h1>
+      )}
 
       {recetasActuales &&
         recetasActuales.map((el, index) => {
