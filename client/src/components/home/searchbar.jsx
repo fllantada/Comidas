@@ -10,6 +10,7 @@ export default function SearchBar() {
   let handleChange = (e) => {
     e.preventDefault();
     setInput(e.target.value);
+    //importar debounce
   };
 
   let handleSubmit = (e) => {
@@ -19,11 +20,13 @@ export default function SearchBar() {
   };
 
   return (
-    <div>
+    <>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <label>Busqueda: </label>
+        <label for="name">Busqueda: </label>
         <input
           type="text"
+          id="name"
+          placeholder="receta"
           name="name"
           value={input}
           onChange={(e) => handleChange(e)}
@@ -31,6 +34,6 @@ export default function SearchBar() {
 
         <button type="submit">Buscar</button>
       </form>
-    </div>
+    </>
   );
 }

@@ -78,6 +78,7 @@ const handleApiResponse = (response) => {
       .replaceAll(`<a href="https://`, "www")
       .replaceAll(`>`, ""),
     steps: filterSteps(response.data),
+    healthyScore: response.data.healthScore,
   };
   return apiRecipe;
 };

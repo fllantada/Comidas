@@ -4,8 +4,8 @@ import Nav from "./components/nav/nav.jsx";
 import Home from "./components/home/home.jsx";
 import RecipeDetails from "./components/recipeDetails/recipeDetails.jsx";
 
-import EstilosGlobales from "./EstilosGlobales";
-import Create from "./components/CreateForm/Create";
+import EstilosGlobales from "./EstilosGlobales.jsx";
+import Create from "./components/CreateForm/Create.jsx";
 
 function App() {
   return (

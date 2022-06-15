@@ -62,9 +62,9 @@ const get_RecipesId = async (req, res) => {
       `https://api.spoonacular.com/recipes/${id}/information${API_KEY}`
     );
 
-    let r = handleApiResponse(apiRecipes);
+    let response = handleApiResponse(apiRecipes);
 
-    res.json(r);
+    res.json(response);
   } catch {
     res.status(400).send({ msg: "no se encontro el  elemento" });
   }

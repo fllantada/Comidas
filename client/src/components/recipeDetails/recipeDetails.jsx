@@ -11,6 +11,7 @@ export default function RecipeDetails() {
   var recipeDetails = useSelector((state) => state.recipe[0]);
 
   if (recipeDetails && recipeDetails.hasOwnProperty("msg")) {
+    console.log("entre a cargar manual la receta");
     recipeDetails = {
       name: "Nombre de Prueba",
       image: "https://spoonacular.com/recipeImages/644387-312x231.jpg",
@@ -24,6 +25,7 @@ export default function RecipeDetails() {
       diets: ["gluten free", "primal", "vegan"],
     };
   }
+  console.log(recipeDetails);
   useEffect(() => {
     dispatch(getRecipeDetails(id));
   }, [dispatch, id]);
@@ -31,6 +33,7 @@ export default function RecipeDetails() {
   return (
     <RecipeDetail>
       <h1>Name:{recipeDetails && recipeDetails.name}</h1>
+      <h2>Score:{recipeDetails && recipeDetails.healthyScore}</h2>
       {recipeDetails && (
         <img src={recipeDetails.image} alt="Imagen de comida" />
       )}
