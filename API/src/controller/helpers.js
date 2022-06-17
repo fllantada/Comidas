@@ -45,9 +45,9 @@ const handleApiResponse = (response) => {
         id: r.id,
         image: r.image,
         name: r.title,
-        diets: r.diets.map((e) => {
-          return { name: e };
-        }), //r.diets, //normalize  con la base de datos aca
+        diets: r.diets, //.map((e) => {
+        //  return { name: e };
+        // }), //r.diets, //normalize  con la base de datos aca
         summary: r.summary
           .replaceAll("</b", "")
           .replaceAll("<b>", "")
@@ -94,6 +94,26 @@ const getApiRecipes = () => {
       return [{ Get_a_LA_API: "no se pudo hacer la consulta", Error_API: e }];
     });
 };
+
+const equalToApi = (dbRecipes) => {
+  //let dbRecipesJSON = { ...dbRecipes[0].toJSON() };
+
+  let dbRecipesJson = dbRecipes.map((e) => e.toJSON());
+  console.log(dbRecipesJson[0].steps);
+  let dbRecipesJsonMaped = dbRecipesJson.map((e) => {
+    return {
+      ...e,
+      diets: e.diets.map((e) => e.name),
+      steps: e.steps.sort((a, b) => {
+        if (a.number > b.number) return 1;
+        if (a.number < b.number) return -1;
+        return 0;
+      }),
+    };
+  });
+
+  return dbRecipesJsonMaped;
+};
 const getDbRecipes = () => {
   console.log("Inicie GetdbRecipes de Helpers");
 
@@ -106,8 +126,8 @@ const getDbRecipes = () => {
       },
       {
         model: Step,
-        //through: { attributes: [] },
-        attributes: ["number", "description"],
+
+        attributes: ["number", ["description", "step"]],
       },
     ],
   });
@@ -120,4 +140,5 @@ module.exports = {
   getDbRecipes,
   close,
   handleApiResponse,
+  equalToApi,
 };

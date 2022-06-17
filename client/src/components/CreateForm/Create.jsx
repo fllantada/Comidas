@@ -5,6 +5,7 @@ import DietSelect from "./DietSelect";
 import GeneralInputs from "./generalInputs";
 import { getAllDiets } from "../../redux/actions/actions";
 import StepsForm from "./steps";
+import { postRecipe } from "../../redux/actions/actions";
 
 export default function Create() {
   const empty = {
@@ -25,6 +26,20 @@ export default function Create() {
   const [steps, setSteps] = React.useState([]);
   const [step, setStep] = React.useState({ number: "", step: "" });
 
+  React.useEffect(() => {
+    console.log("Actualice Recipe ahora es:", recipe);
+  }, [recipe]);
+
+  React.useEffect(() => {
+    console.log("Actualice Steps y steps es", steps);
+    setRecipe(() => {
+      return {
+        ...recipe,
+        steps: steps,
+      };
+    });
+  }, [steps]);
+  //IMAGEN POR DEFECTO
   // const dietas = useSelector((state) => state.diets);
   const dietas = [
     { id: 1, name: "gluten free", updatedAt: "2022-06-14T03:48:22.719Z" },
@@ -49,17 +64,14 @@ export default function Create() {
     setRecipe({ ...recipe, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setRecipe(() => {
-      return {
-        ...recipe,
-        steps: steps,
-      };
-    });
 
-    setRecipe(empty);
-    setSteps([]);
+    console.log(recipe);
+    // console.log(steps);
+    postRecipe(recipe);
+    //setRecipe(empty);
+    //setSteps([]);
     //setStep([]);
   };
 

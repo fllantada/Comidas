@@ -8,9 +8,8 @@ export default function Recipe({ name, image, summary, diets, id, score }) {
         <p>{summary}</p>
       </div>
       <ul>
-        {diets.map((e) => (
-          <li key={Math.random()}> {e}</li>
-        ))}
+        {Array.isArray(diets) &&
+          diets.map((e) => <li key={Math.random()}> {e}</li>)}
       </ul>
     </>
   );

@@ -10,22 +10,25 @@ export default function RecipeDetails() {
 
   var recipeDetails = useSelector((state) => state.recipe[0]);
 
-  if (recipeDetails && recipeDetails.hasOwnProperty("msg")) {
-    console.log("entre a cargar manual la receta");
-    recipeDetails = {
-      name: "Nombre de Prueba",
-      image: "https://spoonacular.com/recipeImages/644387-312x231.jpg",
-      summary:
-        "Garlicky Kale might be just the side dish you are searching for. This caveman, gluten free, primal, and whole 30 recipe serves 2 and costs 69 cents per serving. One serving contains 179 calories, 3g of protein, and 15g of fat. A few people made this recipe, and 17 would say it hit the spot. If you have olive oil, garlic, curly kale, and a few other ingredients on hand, you can make it. From preparation to the plate, this recipe takes around 45 minutes. All things considered, we decided this recipe deserves a spoonacular score of 99%. This score is awesome. Try wwwspoonacular.com/recipes/garlicky-kale-248759Garlicky Kale, wwwspoonacular.com/recipes/garlicky-kale-14910Garlicky Kale, and wwwspoonacular.com/recipes/garlicky-kale-crostini-15010Garlicky Kale Crostini for similar recipes.",
-      healthyScore: 92,
-      steps: [
-        { number: 1, step: "Cocinar a fuego lento durante 2 hs" },
-        { number: 2, step: "hacer reposar y servir" },
-      ],
-      diets: ["gluten free", "primal", "vegan"],
-    };
-  }
-  console.log(recipeDetails);
+  // if (recipeDetails && recipeDetails.hasOwnProperty("msg")) {
+  //   console.log("entre a cargar manual la receta");
+  //   recipeDetails = {
+  //     name: "Nombre de Prueba",
+  //     image: "https://spoonacular.com/recipeImages/644387-312x231.jpg",
+  //     summary:
+  //       "Garlicky Kale might be just the side dish you are searching for. This caveman, gluten free, primal, and whole 30 recipe serves 2 and costs 69 cents per serving. One serving contains 179 calories, 3g of protein, and 15g of fat. A few people made this recipe, and 17 would say it hit the spot. If you have olive oil, garlic, curly kale, and a few other ingredients on hand, you can make it. From preparation to the plate, this recipe takes around 45 minutes. All things considered, we decided this recipe deserves a spoonacular score of 99%. This score is awesome. Try wwwspoonacular.com/recipes/garlicky-kale-248759Garlicky Kale, wwwspoonacular.com/recipes/garlicky-kale-14910Garlicky Kale, and wwwspoonacular.com/recipes/garlicky-kale-crostini-15010Garlicky Kale Crostini for similar recipes.",
+  //     healthyScore: 92,
+  //     steps: [
+  //       { number: 1, step: "Cocinar a fuego lento durante 2 hs" },
+  //       { number: 2, step: "hacer reposar y servir" },
+  //     ],
+  //     diets: ["gluten free", "primal", "vegan"],
+  //   };
+  // }
+  recipeDetails &&
+    Array.isArray(recipeDetails.steps) &&
+    console.log("EN step tengo:", recipeDetails.steps);
+
   useEffect(() => {
     dispatch(getRecipeDetails(id));
   }, [dispatch, id]);
@@ -39,12 +42,16 @@ export default function RecipeDetails() {
       )}
       <Diet>
         Diets:
-        {recipeDetails && recipeDetails.diets.map((e) => <h4>{e}</h4>)}
+        {recipeDetails &&
+          Array.isArray(recipeDetails.diets) &&
+          recipeDetails.diets.map((e, i) => <h4 key={i}>{e}</h4>)}
       </Diet>
       {recipeDetails &&
-        recipeDetails.steps.map((e) => {
+        Array.isArray(recipeDetails.steps) &&
+        recipeDetails.steps.map((e, i) => {
           return (
-            <StepContainer>
+            <StepContainer key={i}>
+              {console.log("El elemento es:", e)}
               <span>Step: {e.number}</span>
               <span>{e.step}</span>
             </StepContainer>

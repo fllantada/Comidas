@@ -42,12 +42,28 @@ Diet.belongsToMany(Recipe, {
 });
 
 const initialize = async () => {
-  axios.get(URL_API).then((r) => {
-    var dietList = r.data.results.map((e) => e.diets);
-    dietList = dietList.flat();
-    console.log(dietList);
-    dietList.map((e) => Diet.findOrCreate({ where: { name: e } }));
-  });
+  axios
+    .get(URL_API)
+    .then((r) => {
+      var dietList = r.data.results.map((e) => e.diets);
+      dietList = dietList.flat();
+      console.log(dietList);
+      dietList.map((e) => Diet.findOrCreate({ where: { name: e } }));
+    })
+    .catch((e) => {
+      console.log(e.message);
+      Diet.findOrCreate({ where: { name: "Gluten Free" } });
+      Diet.findOrCreate({ where: { name: "Vegetarian" } });
+      Diet.findOrCreate({ where: { name: "Lacto-Vegetarian" } });
+      Diet.findOrCreate({ where: { name: "Ovo-Vegetarian" } });
+      Diet.findOrCreate({ where: { name: "Vegan" } });
+      Diet.findOrCreate({ where: { name: "Pescetarian" } });
+      Diet.findOrCreate({ where: { name: "Paleolithic" } });
+      Diet.findOrCreate({ where: { name: "Primal" } });
+      Diet.findOrCreate({ where: { name: "Low FODMAP" } });
+      Diet.findOrCreate({ where: { name: "Whole 30" } });
+      Diet.findOrCreate({ where: { name: "Ketogenic" } });
+    });
   // const conection = await test_Db(sequelize);
   //typeof test_Db;
   sequelize

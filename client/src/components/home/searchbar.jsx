@@ -22,7 +22,7 @@ export default function SearchBar() {
   return (
     <>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <label for="name">Busqueda: </label>
+        <label htmlFor="name">Busqueda: </label>
         <input
           type="text"
           id="name"

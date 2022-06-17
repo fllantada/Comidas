@@ -1,6 +1,11 @@
 require("dotenv").config();
 const axios = require("axios");
-const { getApiRecipes, getDbRecipes, handleApiResponse } = require("./helpers");
+const {
+  getApiRecipes,
+  getDbRecipes,
+  handleApiResponse,
+  equalToApi,
+} = require("./helpers");
 const { Diet, Recipe, Step } = require("../database/database");
 const { API_KEY } = process.env;
 const local_result = { flag: false, data: {} };
@@ -18,7 +23,7 @@ const getDiets = async (req, res) => {
 const getRecipes = async (req, res) => {
   const { name } = req.query;
 
-  if (local_result.flag) {
+  if (local_result.flag && !name) {
     console.log("retornando data local");
     return res.json(local_result.data);
   }
@@ -26,19 +31,28 @@ const getRecipes = async (req, res) => {
   try {
     const apiRecipes = await getApiRecipes();
     const dbRecipes = await getDbRecipes();
-    const allRecipes = [...dbRecipes, ...apiRecipes];
 
+    const dbRecipesApi = equalToApi(dbRecipes);
+
+    const allRecipes = [...dbRecipesApi, ...apiRecipes];
+    console.log("allREcipes es: ", allRecipes);
+    const allRecipesfiltered = await allRecipes.filter((e) =>
+      e.hasOwnProperty("name")
+    );
+
+    console.log("Recetas filtradas es: ", allRecipesfiltered);
     if (name) {
-      let recipeFinded = allRecipes.filter((e) =>
+      let recipeFinded = allRecipesfiltered.filter((e) =>
         e.name.toLowerCase().includes(name.toLowerCase())
       );
+      local_result.flag = false;
       recipeFinded.length
         ? res.status(200).send(recipeFinded)
         : res.status(404).json({ msg: "no se encontro la receta" });
     } else {
       local_result.flag = true;
-      local_result.data = allRecipes;
-      res.json(allRecipes);
+      local_result.data = allRecipesfiltered;
+      res.json(allRecipesfiltered);
     }
   } catch {
     res.json({ msg: "no se pudieron encontrar datos" });
@@ -51,8 +65,8 @@ const get_RecipesId = async (req, res) => {
   try {
     const dbRecipes = await getDbRecipes(); //[]
     const recipeFinded = await dbRecipes.filter((e) => e.id === id);
-
-    if (recipeFinded.length) return res.send(recipeFinded);
+    console.log(equalToApi(recipeFinded));
+    if (recipeFinded.length) return res.send(equalToApi(recipeFinded)[0]);
   } catch (error) {
     console.error(error);
   }
@@ -97,11 +111,12 @@ const set_Recipes = async (req, res) => {
         where: { name: diet },
         defaults: {},
       });
+      console.log("Cree una nueva receta");
       await recipeCreated.addDiet(newDiet);
       await newDiet.addRecipe(recipeCreated);
     });
-
-    res.status(201).send(recipeCreated);
+    local_result.flag = false;
+    res.status(201).send({ msg: "se Creo la receta correctamente" });
   } catch {
     res.status(404).json({ msg: "Error al crear la receta" });
   }

@@ -18,16 +18,16 @@ const initialState = {
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_ALL_RECIPES:
-      const recipeMaped = action.payload.map((e) => {
-        const newDiets = e.diets.map((el) => el.name);
+      // const recipeMaped = action.payload.map((e) => {
+      //   const newDiets = e.diets.map((el) => el.name);
 
-        return { ...e, diets: newDiets };
-      });
+      //   return { ...e, diets: newDiets };
+      // });
 
       return {
         ...state,
-        recipes: recipeMaped,
-        recipesBackup: recipeMaped,
+        recipes: action.payload,
+        recipesBackup: action.payload,
       };
 
     case GET_ALL_DIETS:

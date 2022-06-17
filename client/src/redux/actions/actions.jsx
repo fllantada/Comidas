@@ -46,3 +46,15 @@ export const filterByDiet = (payload) => {
 export const searchRecipe = (payload) => {
   return { type: SEARCH_RECIPE, payload: payload };
 };
+export const postRecipe = (payload) => {
+  fetch("http://localhost:3001/recipes", {
+    method: "POST", // or 'PUT'
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .catch((error) => console.error("Error:", error))
+    .then((response) => console.log("Success:", response));
+};

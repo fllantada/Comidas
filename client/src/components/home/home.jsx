@@ -29,9 +29,14 @@ export default function Home() {
     dispatch(getAllDiets);
   }, [dispatch]);
 
+  React.useEffect(() => {
+    setloading(false);
+  }, [todasLasRecetas]);
+
   ////Paginado
   const [paginaActual, setPagina] = React.useState(1);
   const [order, setOrder] = React.useState("");
+  const [loading, setloading] = React.useState(true);
 
   const recetasPorPagina = 9;
   const indiceUltimaReceta = paginaActual * recetasPorPagina;
@@ -58,7 +63,8 @@ export default function Home() {
     setPagina(1);
     setOrder(event.target.value);
   };
-
+  if (loading) return <h1>ESPERA MIENTRAS CARGAMOS LA PAGINA</h1>;
+  //if (todasLasRecetas.length && todasLasDietas.length) setloading(false);
   return (
     <Div>
       <FilterContainer>
@@ -88,8 +94,8 @@ export default function Home() {
       {recetasActuales &&
         recetasActuales.map((el, index) => {
           return (
-            <CardContainer flag={index % 2 ? true : false} key={el.id}>
-              <Link to={`/home/detail/${el.id}`}>
+            <LinkStyled to={`/home/detail/${el.id}`}>
+              <CardContainer flag={index % 2 ? true : false} key={el.id}>
                 <Recipe
                   key={el.id}
                   id={el.id}
@@ -99,14 +105,22 @@ export default function Home() {
                   diets={el.diets}
                   score={el.healthyScore}
                 />
-              </Link>
-            </CardContainer>
+              </CardContainer>
+            </LinkStyled>
           );
         })}
     </Div>
   );
 }
 
+const LinkStyled = styled(Link)`
+  display: flex;
+  width: 100%;
+  //justify-items: center;
+  justify-content: center;
+  //text-align: center;
+  //align-content: center;
+`;
 const FilterContainer = styled.nav`
   width: 90%;
   position: relative;
